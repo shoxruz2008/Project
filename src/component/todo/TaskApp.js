@@ -1,51 +1,74 @@
-import React, { useState } from 'react';
-import uuid from 'react-uuid';
-import './taskapp.css';
-import AddTodo from './AddTodo';
-import TaskList from './TaskList';
+import { useReducer } from 'react';
+import AddTask from './AddTask.js';
+import TaskList from './TaskList.js';
 
-const initialTodos = [
-	{ id: 0, title: 'Buy milk', done: true },
-	{ id: 1, title: 'Eat tacos', done: false },
-	{ id: 2, title: 'Brew tea', done: false },
-];
-const TaskApp = () => {
-	const [todos, setTodos] = useState(initialTodos);
+export default function TaskApp() {
+	const [tasks, dispatch] = useReducer(tasksReducer, initialTasks);
 
-	function handleAddTodo(title) {
-		if (!title.trim()) return;
-		setTodos([
-			...todos,
-			{
-				id: uuid(),
-				title: title,
-				done: false,
-			},
-		]);
+	function handleAddTask(text) {
+		dispatch({
+			type: 'added',
+			id: nextId++,
+			text: text,
+		});
 	}
 
-	function handleTodoChange(updateNote) {
-		setTodos(
-			todos.map((todo) => {
-				if (todo.id === updateNote.id) {
-					return updateNote;
-				} else {
-					return todo;
-				}
-			})
-		);
+	function handleChangeTask(task) {
+		dispatch({
+			type: 'changed',
+			task: task,
+		});
 	}
 
-	function handleTodoDelete(id) {
-		setTodos(todos.filter((todo) => todo.id !== id));
+	function handleDeleteTask(taskId) {
+		dispatch({
+			type: 'deleted',
+			id: taskId,
+		});
 	}
 
 	return (
-		<div>
-			<AddTodo onAddTodo={handleAddTodo} />
-			<TaskList todos={todos} onDeleteTodo={handleTodoDelete} onChangeTodo={handleTodoChange} />
-		</div>
+		<>
+			<h1>Day off in Kyoto</h1>
+			<AddTask onAddTask={handleAddTask} />
+			<TaskList tasks={tasks} onChangeTask={handleChangeTask} onDeleteTask={handleDeleteTask} />
+		</>
 	);
-};
+}
 
-export default TaskApp;
+function tasksReducer(tasks, action) {
+	switch (action.type) {
+		case 'added': {
+			return [
+				...tasks,
+				{
+					id: action.id,
+					text: action.text,
+					done: false,
+				},
+			];
+		}
+		case 'changed': {
+			return tasks.map((t) => {
+				if (t.id === action.task.id) {
+					return action.task;
+				} else {
+					return t;
+				}
+			});
+		}
+		case 'deleted': {
+			return tasks.filter((t) => t.id !== action.id);
+		}
+		default: {
+			throw Error('Unknown action: ' + action.type);
+		}
+	}
+}
+
+let nextId = 3;
+const initialTasks = [
+	{ id: 0, text: 'Philosopher’s Path', done: true },
+	{ id: 1, text: 'Visit the temple', done: false },
+	{ id: 2, text: 'Drink matcha', done: false },
+];

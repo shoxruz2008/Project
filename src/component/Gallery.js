@@ -1,51 +1,58 @@
 import React, { useState } from 'react';
-import { sculptureList } from './Data';
+
+let images = [
+	{
+		place: 'Penang, Malaysia',
+		src: 'https://i.imgur.com/FJeJR8M.jpg',
+	},
+	{
+		place: 'Lisbon, Portugal',
+		src: 'https://i.imgur.com/dB2LRbj.jpg',
+	},
+	{
+		place: 'Bilbao, Spain',
+		src: 'https://i.imgur.com/z08o2TS.jpg',
+	},
+	{
+		place: 'Valparaíso, Chile',
+		src: 'https://i.imgur.com/Y3utgTi.jpg',
+	},
+	{
+		place: 'Schwyz, Switzerland',
+		src: 'https://i.imgur.com/JBbMpWY.jpg',
+	},
+	{
+		place: 'Prague, Czechia',
+		src: 'https://i.imgur.com/QwUKKmF.jpg',
+	},
+	{
+		place: 'Ljubljana, Slovenia',
+		src: 'https://i.imgur.com/3aIiwfm.jpg',
+	},
+];
 
 const Gallery = () => {
 	const [index, setIndex] = useState(0);
-	const [showMore, setShowMore] = useState(false);
+	const hasNext = index < images.length - 1;
 
-	let hasPrev = index > 0;
-	let hasNext = index < sculptureList.length - 1;
-
-	function handleNextClick() {
+	function handleClick() {
 		if (hasNext) {
 			setIndex(index + 1);
-		}
-	}
-	function handlePrevClick() {
-		if (hasPrev) {
-			setIndex(index - 1);
+		} else {
+			setIndex(0);
 		}
 	}
 
-	function handleMoreClick() {
-		setShowMore(!showMore);
-	}
-
-	let sculpture = sculptureList[index];
-
-	// console.log(sculpture);
+	let image = images[index];
 	return (
-		<div>
-			<button onClick={handlePrevClick} disabled={!hasPrev}>
-				prev
-			</button>
-			<button onClick={handleNextClick} disabled={!hasNext}>
-				next
-			</button>
-
-			<h2>
-				<i>{sculpture.name}</i>
-				by {sculpture.artist}
-			</h2>
+		<>
+			<button onClick={handleClick}>Next</button>
 			<h3>
-				({index + 1} of {sculptureList.length})
+				Image {index + 1} of {images.length}
 			</h3>
-			<button onClick={handleMoreClick}>{showMore ? 'hide' : 'show'}</button>
-			<img src={sculpture.url} alt={sculpture.alt} />
-			{showMore && <p>{sculpture.description}</p>}
-		</div>
+			<img key={image.src} src={image.src} alt={image.place} />
+			<p>{image.place}</p>
+		</>
 	);
 };
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const FeedbackForm = () => {
+const MovingDot = () => {
 	const [position, setPosition] = useState({
 		x: 0,
 		y: 0,
@@ -17,7 +17,7 @@ const FeedbackForm = () => {
 			style={{
 				position: 'relative',
 				width: '100vw',
-				height: '100vw',
+				height: '100vh',
 			}}
 		>
 			<div
@@ -36,4 +36,4 @@ const FeedbackForm = () => {
 	);
 };
 
-export default FeedbackForm;
+export default MovingDot;
